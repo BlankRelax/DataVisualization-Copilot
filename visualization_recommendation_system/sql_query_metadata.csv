@@ -1,0 +1,3 @@
+agg,agg_by,groupby,viz_type,sql_query
+SUM,unit_price * quantity,billing_country;,echarts_timeseries_bar,"SELECT billing_country, SUM(unit_price * quantity) AS total_spent FROM invoice_line JOIN invoice ON invoice_line.invoice_id = invoice.invoice_id GROUP BY billing_country;"
+COUNT,*,billing_city;,pie,"SELECT billing_city, COUNT(*) AS purchase_count FROM invoice WHERE billing_country = 'USA' GROUP BY billing_city;"
