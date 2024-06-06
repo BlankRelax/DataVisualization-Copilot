@@ -50,7 +50,10 @@ class SupersetAPIClient:
         self.chart = Charts(base_url=self._base_url,
                             headerAuth=self._headerAuth)
 
-    def create_dashboard(self, name:str) -> int:
+    def create_dashboard(self,
+                        name:str,
+                        verbose:bool=False,
+                        published:Literal['true', 'false']='true'):
         """Function to new dashboard using superset API
 
         Params:
@@ -59,11 +62,14 @@ class SupersetAPIClient:
         Returns: 
         number of new dashboard
         """
-        self.dashboards.create(name=name)
+        self.dashboards.create(name=name,
+                               verbose=verbose,
+                               published=published)
 
     def create_dataset(self,
                            sql:str,
-                           table_name:str):
+                           table_name:str,
+                           verbose:bool=False):
         """Function to excecute SQL commands and store it as a dataset all using superset API
 
         Params:
@@ -76,7 +82,8 @@ class SupersetAPIClient:
         self.dataset.create(
                            sql=sql,
                            db_ids=self.db_ids,
-                           table_name=table_name)
+                           table_name=table_name,
+                           verbose=verbose)
         
     
     def create_chart(self,

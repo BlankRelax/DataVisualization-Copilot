@@ -54,7 +54,8 @@ class Datasets(BaseSupersetObject):
                            sql:str,
                            db_ids:dict[str,int],
                            table_name:str,
-                           db_name:str='chinook'):
+                           db_name:str='chinook',
+                           verbose:bool=False):
         """Create dataset from SQL commands using superset API
 
         Params:
@@ -80,6 +81,7 @@ class Datasets(BaseSupersetObject):
                         "schema": schema,
                         "sql": sql ,
                         "table_name": table_name })
+        if verbose: print(r,r.json())
         print(f"dataset has been created with name {table_name}")
         excecuted_data_id =r.json()['id'] # e.g 31
         excecuted_data_uid:str=r.json()['data']['uid'] # e.g 31__table

@@ -1,4 +1,5 @@
 import requests
+from typing import Literal
 from supersetapiclient.base import BaseSupersetObject
 
 # code to be refactored to have api calls as seperate functions
@@ -46,6 +47,7 @@ class Dashboards(BaseSupersetObject):
     def create(self,
                name:str,
                verbose:bool=False,
+               published:Literal['true', 'false']='true',
                 ) -> None:
         """Function to create new dashboard using superset API
 
@@ -58,7 +60,8 @@ class Dashboards(BaseSupersetObject):
 
         r = requests.post(url=self._base_url+'/api/v1/dashboard/',
                         headers=self._headerAuth,
-                        json={"dashboard_title": name})
+                        json={"dashboard_title": name,
+                              "published":published})
         if verbose: print(r, r.json()) 
         user_dashboard_id = r.json()['id']
         
