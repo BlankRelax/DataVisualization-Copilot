@@ -54,7 +54,7 @@ class Charts(BaseSupersetObject):
         return chart_info
         
 
-    def create_barchart(self,
+    def _create_barchart(self,
     slice_name:str,
     dashboard_ids:list[int],
     column_names,
@@ -65,7 +65,7 @@ class Charts(BaseSupersetObject):
     excecuted_data_type,
     true=True,
     false=False,
-    null=None):
+    null=None)->dict[str]:
         """
         create a "echarts_timeseries_bar" schema to create a barchart for API payload
 
@@ -133,7 +133,7 @@ class Charts(BaseSupersetObject):
                 "viz_type":"echarts_timeseries_bar"}
         return payload
     
-    def create_pie(self,
+    def _create_pie(self,
     slice_name:str,
     dashboard_ids:list[int],
     column_names,
@@ -145,7 +145,7 @@ class Charts(BaseSupersetObject):
     true=True,
     false=False,
     null=None
-    ):
+    )->dict[str]:
         """
         create a "pie" schema to create a piechart for API payload
 
@@ -159,10 +159,10 @@ class Charts(BaseSupersetObject):
         # TODO: make "label" into a run-time parameter created by the LLM
         #       make "slice_name into a run-time parameter created by the LLM"
 
-        metric={"expressionType":"SIMPLE","column":{"advanced_data_type":null,"certification_details":null,"certified_by":null,
+        metric=[{"expressionType":"SIMPLE","column":{"advanced_data_type":null,"certification_details":null,"certified_by":null,
                 "column_name":column_names[1],"description":null,"expression":null,"filterable":true,"groupby":true,"id":null,"is_certified":false,
                 "is_dttm":false,"python_date_format":null,"type":"DECIMAL","type_generic":0,"verbose_name":null,"warning_markdown":null},"aggregate":"SUM",
-                "sqlExpression":null,"datasourceWarning":false,"hasCustomLabel":false,"label":null,"optionName":null}
+                "sqlExpression":null,"datasourceWarning":false,"hasCustomLabel":false,"label":null,"optionName":null}]
         
         params={"datasource":excecuted_data_uid,
                 "viz_type":"pie",
@@ -195,7 +195,7 @@ class Charts(BaseSupersetObject):
                 "viz_type":"pie"}
         return payload
     
-    def create_timeseries(self,
+    def _create_timeseries(self,
                         slice_name:str,
                         dashboard_ids:list[int],
                         column_names,
@@ -206,54 +206,52 @@ class Charts(BaseSupersetObject):
                         excecuted_data_type,
                         true=True,
                         false=False,
-                        null=None):
+                        null=None)->dict[str]:
         
-        metric = {"expressionType":"SIMPLE","column":{"advanced_data_type":null,"certification_details":null,"certified_by":null,
-                    "column_name":column_names[1],"description":null,"expression":null,"filterable":true,"groupby":true,"id":null,
-                    "is_certified":false,
-                    "is_dttm":false,"python_date_format":null,"type":"DECIMAL","type_generic":0,
-                    "verbose_name":null,"warning_markdown":null},"aggregate":"AVG",
-                    "sqlExpression":null,"datasourceWarning":false,"hasCustomLabel":false,"label":column_names[1],
-                    "optionName":null}
+        metrics=[{"expressionType":"SIMPLE","column":{"advanced_data_type":null,"certification_details":null,"certified_by":null,
+        "column_name":column_names[1],"description":null,"expression":null,"filterable":true,"groupby":true,"id":null,
+        "is_certified":false,"is_dttm":false,"python_date_format":null,"type":"LONGINTEGER","type_generic":0,"verbose_name":null,
+        "warning_markdown":null},"aggregate":"AVG","sqlExpression":null,"datasourceWarning":false,"hasCustomLabel":false,
+        "label":column_names[1],"optionName":null}]
         
         params =  {"datasource":excecuted_data_uid,
-                    "viz_type":"echarts_timeseries_smooth",
-                    "x_axis":column_names[0],
-                    "time_grain_sqla":"P1D",
-                    "xAxisForceCategorical":true,
-                    "x_axis_sort_asc":true,
-                    "x_axis_sort_series":"name",
-                    "x_axis_sort_series_ascending":true,
-                    "metric":metric,
-                    "groupby":[],
-                    "adhoc_filters":[],
-                    "order_desc":true,
-                    "row_limit":10000,
-                    "truncate_metric":true,
-                    "show_empty_columns":true,
-                    "comparison_type":"values",
-                    "annotation_layers":[],
-                    "forecastEnabled":false,
-                    "forecastPeriods":10,
-                    "forecastInterval":0.8,
-                    "x_axis_title_margin":15,
-                    "y_axis_title_margin":15,
-                    "y_axis_title_position":"Left",
-                    "sort_series_type":"sum",
-                    "color_scheme":"supersetColors",
-                    "only_total":true,
-                    "markerSize":6,
-                    "show_legend":true,
-                    "legendType":"scroll",
-                    "legendOrientation":"top",
-                    "x_axis_time_format":"smart_date",
-                    "rich_tooltip":true,
-                    "tooltipTimeFormat":"smart_date",
-                    "y_axis_format":"SMART_NUMBER",
-                    "truncateXAxis":true,
-                    "y_axis_bounds":[null,null],
-                    "extra_form_data":{},
-                    "dashboards":[]}
+        "viz_type":"echarts_timeseries_line",
+        "x_axis":column_names[0],
+        "time_grain_sqla":"P3M",
+        "x_axis_sort_asc":true,
+        "x_axis_sort_series":"name",
+        "x_axis_sort_series_ascending":true,
+        "metrics":metrics,
+        "groupby":[],
+        "adhoc_filters":[{"clause":"WHERE","subject":"month","operator":"TEMPORAL_RANGE","comparator":"No filter","expressionType":"SIMPLE"}],
+        "order_desc":true,
+        "row_limit":10000,
+        "truncate_metric":true,
+        "show_empty_columns":true,
+        "comparison_type":"values",
+        "annotation_layers":[],
+        "forecastPeriods":10,
+        "forecastInterval":0.8,
+        "x_axis_title_margin":15,
+        "y_axis_title_margin":15,
+        "y_axis_title_position":"Left",
+        "sort_series_type":"sum",
+        "color_scheme":"supersetColors",
+        "seriesType":"line",
+        "only_total":true,
+        "opacity":0.2,
+        "markerSize":6,
+        "show_legend":true,
+        "legendType":"scroll",
+        "legendOrientation":"top",
+        "x_axis_time_format":"smart_date",
+        "rich_tooltip":true,
+        "tooltipTimeFormat":"smart_date",
+        "y_axis_format":"SMART_NUMBER",
+        "truncateXAxis":true,
+        "y_axis_bounds":[null,null],
+        "extra_form_data":{},
+        "dashboards":[]}
 
         payload = {"cache_timeout": null,
                 "certification_details": null,
@@ -265,8 +263,59 @@ class Charts(BaseSupersetObject):
                 "description": 'null',
                 "params":json.dumps(params),
                 "slice_name":slice_name,
-                "viz_type":"echarts_timeseries_smooth"}   
+                "viz_type":"echarts_timeseries_line"}   
+        return payload
+    
+    def _create_table(self,
+                        slice_name:str,
+                        dashboard_ids:list[int],
+                        column_names,
+                        excecuted_data_uid,
+                        excecuted_data_id,
+                        schema,
+                        table_name,
+                        excecuted_data_type,
+                        true=True,
+                        false=False,
+                        null=None
+                        ):
+        metrics=[{"expressionType":"SIMPLE","column":{"advanced_data_type":null,"certification_details":null,"certified_by":null,
+                  "column_name":column_names[1],"description":null,"expression":null,"filterable":true,"groupby":true,
+                  "id":null,"is_certified":false,"is_dttm":false,"python_date_format":null,"type":"DECIMAL","type_generic":0,
+                  "verbose_name":null,"warning_markdown":null},"aggregate":"AVG","sqlExpression":null,"datasourceWarning":false,
+                  "hasCustomLabel":false,"label":column_names[1],"optionName":null}]
         
+        params= {"datasource":excecuted_data_uid,
+                 "viz_type":"table",
+                 "query_mode":"aggregate",
+                 "groupby":[column_names[0]],
+                 "time_grain_sqla":"P1D",
+                 "temporal_columns_lookup":{},
+                 "metrics":metrics,
+                "all_columns":[],
+                "percent_metrics":[],
+                "adhoc_filters":[],
+                "order_by_cols":[],
+                "row_limit":1000,
+                "server_page_length":10,
+                "order_desc":true,
+                "table_timestamp_format":"smart_date",
+                "show_cell_bars":true,
+                "color_pn":true,
+                "extra_form_data":{},
+                "dashboards":[]}
+        
+        payload = {"cache_timeout": null,
+                "certification_details": null,
+                "certified_by": null,
+                "dashboards": dashboard_ids,
+                "datasource_id": excecuted_data_id,
+                "datasource_name": f"{schema}.{table_name}",
+                "datasource_type": excecuted_data_type,
+                "description": 'null',
+                "params":json.dumps(params),
+                "slice_name":slice_name,
+                "viz_type":"table"} 
         return payload
 
     def create(self,
@@ -280,12 +329,13 @@ class Charts(BaseSupersetObject):
                         schema,
                         table_name,
                         excecuted_data_type,
+                        verbose:bool=False
                         ):
 
         if viz_type == "echarts_timeseries_bar":
             r=requests.post(self._base_url+'/api/v1/chart/',
                             headers=self._headerAuth,
-                            json=self.create_barchart(slice_name=slice_name,
+                            json=self._create_barchart(slice_name=slice_name,
                             dashboard_ids=dashboard_ids,
                             column_names=column_names,
                             excecuted_data_uid=excecuted_data_uid,
@@ -293,11 +343,12 @@ class Charts(BaseSupersetObject):
                             schema=schema,
                             table_name=table_name,
                             excecuted_data_type=excecuted_data_type))
+            if verbose: print(r,r.json())
             return r.json()
         elif viz_type == "pie":
             r=requests.post(self._base_url+'/api/v1/chart/',
                             headers=self._headerAuth,
-                            json=self.create_pie(slice_name=slice_name,
+                            json=self._create_pie(slice_name=slice_name,
                             dashboard_ids=dashboard_ids,
                             column_names=column_names,
                             excecuted_data_uid=excecuted_data_uid,
@@ -305,11 +356,12 @@ class Charts(BaseSupersetObject):
                             schema=schema,
                             table_name=table_name,
                             excecuted_data_type=excecuted_data_type))
+            if verbose: print(r,r.json())
             return r.json()
-        elif viz_type=='echarts_timeseries_smooth':
+        elif viz_type=='echarts_timeseries_line':
             r=requests.post(self._base_url+'/api/v1/chart/',
                             headers=self._headerAuth,
-                            json=self.create_timeseries(slice_name=slice_name,
+                            json=self._create_timeseries(slice_name=slice_name,
                             dashboard_ids=dashboard_ids,
                             column_names=column_names,
                             excecuted_data_uid=excecuted_data_uid,
@@ -317,5 +369,19 @@ class Charts(BaseSupersetObject):
                             schema=schema,
                             table_name=table_name,
                             excecuted_data_type=excecuted_data_type))
+            if verbose: print(r,r.json())
+            return r.json()
+        elif viz_type=='table':
+            r=requests.post(self._base_url+'/api/v1/chart/',
+                            headers=self._headerAuth,
+                            json=self._create_table(slice_name=slice_name,
+                            dashboard_ids=dashboard_ids,
+                            column_names=column_names,
+                            excecuted_data_uid=excecuted_data_uid,
+                            excecuted_data_id=excecuted_data_id,
+                            schema=schema,
+                            table_name=table_name,
+                            excecuted_data_type=excecuted_data_type))
+            if verbose: print(r,r.json())
             return r.json()
 

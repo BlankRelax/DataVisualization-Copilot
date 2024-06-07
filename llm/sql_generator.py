@@ -20,7 +20,7 @@ from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
 
 from configs import examples_chinook, schema_chinook_postgre
 
-from visualization_recommendation_system.visual_recommender import supported_viz_types
+from typing_cc.typing import supported_viz_types, supported_viz_types_inv
 
 model_name: Literal['Cohere', 'OpenAI', 'llama'] = 'Cohere'
 

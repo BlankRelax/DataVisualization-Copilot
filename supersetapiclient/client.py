@@ -6,6 +6,7 @@ from IPython.display import JSON
 from .dashboards import Dashboards
 from .dataset import Datasets
 from .charts import Charts
+from typing_cc.typing import viz_types
 
 class SupersetAPIClient:
     def __init__(self,
@@ -88,8 +89,10 @@ class SupersetAPIClient:
     
     def create_chart(self,
                           slice_name,
-                          viz_type:Literal["echarts_timeseries_bar", "pie"],
-                          dashboard_ids:list[int]|None=None):
+                          viz_type:viz_types,
+                          verbose:bool,
+                          dashboard_ids:list[int]|None=None,
+                          ):
         """create data from previously excecuted sql query"""
         
         dashboard_ids = self.dashboards.user_dashboard_ids if dashboard_ids is None else dashboard_ids
@@ -101,7 +104,8 @@ class SupersetAPIClient:
                                 excecuted_data_id=self.dataset.excecuted_data_id,
                                 schema=self.dataset.schema,
                                 table_name=self.dataset.table_name,
-                                excecuted_data_type=self.dataset.excecuted_data_type)
+                                excecuted_data_type=self.dataset.excecuted_data_type,
+                                verbose=verbose)
                                 
                                       
         
