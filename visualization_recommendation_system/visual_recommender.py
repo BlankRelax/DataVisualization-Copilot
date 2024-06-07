@@ -1,5 +1,6 @@
 import pandas as pd
 from typing import Generator, Literal
+from typing_cc.typing import supported_viz_types, supported_viz_types_inv
 from configs import examples_chinook, get_time
 """
 depending on the data we are creating for the user, we may use certain visualization techniques
@@ -12,8 +13,6 @@ Thus we aim to map certain aggregate functions and clauses to certain types of g
 visuals to recommend to the user
 """
 
-supported_viz_types ={'bar chart':'echarts_timeseries_bar', 'pie chart':'pie' }
-supported_viz_types_inv = {v: k for k, v in supported_viz_types.items()}
 class visual_recommender:
 
     def __init__(self) -> None:

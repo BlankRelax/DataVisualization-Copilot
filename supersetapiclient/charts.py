@@ -1,9 +1,12 @@
+import sys
+sys.path
+if 'f:\\Users\\hassa\\carecognitics_backend' not in sys.path:
+    sys.path.append('f:\\Users\\hassa\\carecognitics_backend')
 import json
 import requests
-from typing import Literal
+from typing_cc.typing import viz_types
 from supersetapiclient.base import BaseSupersetObject
 
-# code to be refactored to have api calls as seperate functions
 class Charts(BaseSupersetObject):
 
     def __init__(self, base_url:str, headerAuth:dict) -> None:
@@ -193,22 +196,83 @@ class Charts(BaseSupersetObject):
         return payload
     
     def create_timeseries(self,
-                        
-                        slice_name,
-                        viz_type:Literal["echarts_timeseries_bar", "pie"],
-                        dashboard_ids:list[int]|None,
+                        slice_name:str,
+                        dashboard_ids:list[int],
                         column_names,
                         excecuted_data_uid,
                         excecuted_data_id,
                         schema,
                         table_name,
-                        excecuted_data_type,):
-        pass
+                        excecuted_data_type,
+                        true=True,
+                        false=False,
+                        null=None):
+        
+        metric = {"expressionType":"SIMPLE","column":{"advanced_data_type":null,"certification_details":null,"certified_by":null,
+                    "column_name":column_names[1],"description":null,"expression":null,"filterable":true,"groupby":true,"id":null,
+                    "is_certified":false,
+                    "is_dttm":false,"python_date_format":null,"type":"DECIMAL","type_generic":0,
+                    "verbose_name":null,"warning_markdown":null},"aggregate":"AVG",
+                    "sqlExpression":null,"datasourceWarning":false,"hasCustomLabel":false,"label":column_names[1],
+                    "optionName":null}
+        
+        params =  {"datasource":excecuted_data_uid,
+                    "viz_type":"echarts_timeseries_smooth",
+                    "x_axis":column_names[0],
+                    "time_grain_sqla":"P1D",
+                    "xAxisForceCategorical":true,
+                    "x_axis_sort_asc":true,
+                    "x_axis_sort_series":"name",
+                    "x_axis_sort_series_ascending":true,
+                    "metric":metric,
+                    "groupby":[],
+                    "adhoc_filters":[],
+                    "order_desc":true,
+                    "row_limit":10000,
+                    "truncate_metric":true,
+                    "show_empty_columns":true,
+                    "comparison_type":"values",
+                    "annotation_layers":[],
+                    "forecastEnabled":false,
+                    "forecastPeriods":10,
+                    "forecastInterval":0.8,
+                    "x_axis_title_margin":15,
+                    "y_axis_title_margin":15,
+                    "y_axis_title_position":"Left",
+                    "sort_series_type":"sum",
+                    "color_scheme":"supersetColors",
+                    "only_total":true,
+                    "markerSize":6,
+                    "show_legend":true,
+                    "legendType":"scroll",
+                    "legendOrientation":"top",
+                    "x_axis_time_format":"smart_date",
+                    "rich_tooltip":true,
+                    "tooltipTimeFormat":"smart_date",
+                    "y_axis_format":"SMART_NUMBER",
+                    "truncateXAxis":true,
+                    "y_axis_bounds":[null,null],
+                    "extra_form_data":{},
+                    "dashboards":[]}
+
+        payload = {"cache_timeout": null,
+                "certification_details": null,
+                "certified_by": null,
+                "dashboards": dashboard_ids,
+                "datasource_id": excecuted_data_id,
+                "datasource_name": f"{schema}.{table_name}",
+                "datasource_type": excecuted_data_type,
+                "description": 'null',
+                "params":json.dumps(params),
+                "slice_name":slice_name,
+                "viz_type":"echarts_timeseries_smooth"}   
+        
+        return payload
 
     def create(self,
                         
                         slice_name,
-                        viz_type:Literal["echarts_timeseries_bar", "pie"],
+                        viz_type:viz_types,
                         dashboard_ids:list[int]|None,
                         column_names,
                         excecuted_data_uid,
@@ -217,9 +281,7 @@ class Charts(BaseSupersetObject):
                         table_name,
                         excecuted_data_type,
                         ):
-    
-        # TODO: make "viz_type" into a run-time parameter created by the LLM
-        
+
         if viz_type == "echarts_timeseries_bar":
             r=requests.post(self._base_url+'/api/v1/chart/',
                             headers=self._headerAuth,
@@ -244,3 +306,16 @@ class Charts(BaseSupersetObject):
                             table_name=table_name,
                             excecuted_data_type=excecuted_data_type))
             return r.json()
+        elif viz_type=='echarts_timeseries_smooth':
+            r=requests.post(self._base_url+'/api/v1/chart/',
+                            headers=self._headerAuth,
+                            json=self.create_timeseries(slice_name=slice_name,
+                            dashboard_ids=dashboard_ids,
+                            column_names=column_names,
+                            excecuted_data_uid=excecuted_data_uid,
+                            excecuted_data_id=excecuted_data_id,
+                            schema=schema,
+                            table_name=table_name,
+                            excecuted_data_type=excecuted_data_type))
+            return r.json()
+
