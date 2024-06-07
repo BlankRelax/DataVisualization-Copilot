@@ -65,7 +65,7 @@ example_selector = SemanticSimilarityExampleSelector.from_examples(
 )
 
 prefix="""A user has given you a question: {input}. 
-Write an SQL query in PostgreSQL given the schema: {schema} to extract the relevant information needed to answer the question. 
+Write an SQL query in PostgreSQL given the schema: {schema} to extract the relevant information needed to answer the question. Unless stated otherwise, only return 2 columns 
 Only return an SQL Query and no other text.  
 Unless otherwise specificed, do not return more than {top_k} rows.
 ."""
