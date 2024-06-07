@@ -14,6 +14,7 @@ from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 
 from sqlalchemy import create_engine
 import pandas as pd
+from config_local import API_key
 
 from langchain.chains import LLMChain, SequentialChain
 from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
@@ -52,7 +53,7 @@ def trim_sql_query(query):
 supported_chart_types_list = list(supported_viz_types.keys())
     
 
-API_key = "3E7jiyBcx2wQHDkScs76tLv5Akevpx5kXLOf0nKk"
+API_key = API_key
 llm = ChatCohere(cohere_api_key=API_key)
 
 # Create a template for the initial SQL chain using Dynamic few-shot prompting

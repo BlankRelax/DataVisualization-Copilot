@@ -6,6 +6,7 @@
 # custom
 config.sh
 .env
+
 /experimental_notebooks/checkpoint-500/
 /experimental_notebooks/sql-training-1716213274/
 /experimental_notebooks/fine_tuned_models/
@@ -13,6 +14,7 @@ config.sh
 /Chinook.db
 /Figures/
 /diagrams/
+config_local.py
 
 # Node artifact files
 node_modules/
