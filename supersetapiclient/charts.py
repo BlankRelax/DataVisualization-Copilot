@@ -191,6 +191,19 @@ class Charts(BaseSupersetObject):
                 "slice_name":slice_name,
                 "viz_type":"pie"}
         return payload
+    
+    def create_timeseries(self,
+                        
+                        slice_name,
+                        viz_type:Literal["echarts_timeseries_bar", "pie"],
+                        dashboard_ids:list[int]|None,
+                        column_names,
+                        excecuted_data_uid,
+                        excecuted_data_id,
+                        schema,
+                        table_name,
+                        excecuted_data_type,):
+        pass
 
     def create(self,
                         
