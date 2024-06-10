@@ -122,7 +122,7 @@ class Dashboards(BaseSupersetObject):
             Returns:
             embedded sdk 
         """
-        r = requests.post(url=self._base_url+f'/api/v1/dashboard/{id}/embedded',
+        r = requests.get(url=self._base_url+f'/api/v1/dashboard/{id}/embedded',
                         headers=self._headerAuth,
                         )
         if verbose: print(r)
@@ -144,16 +144,11 @@ class Dashboards(BaseSupersetObject):
                         headers=self._headerAuth,
                         )
         if verbose: print(r)
-        return r.status_code
-         
-        r = requests.post(url=self._base_url+f'/api/v1/dashboard/{id}/embedded',
-                        headers=self._headerAuth,
-                        json={'allowed_domains':allowed_domains})
-        if verbose: print(r)
-        embedded_sdk = r.json()['result']['uuid']
-        return embedded_sdk
-
-    
+        if r.status_code==200:
+            return "dashboard successfully deleted"
+        else: 
+            return "error in deleting dashboard"
+        
     def get_link(self,id:str|int)->str:
         return f"{self._base_url}/superset/dashboard/{id}?standalone=true"
     
