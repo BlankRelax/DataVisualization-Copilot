@@ -3,9 +3,9 @@ from time import localtime
 import json
 import requests
 from IPython.display import JSON
-from .dashboards import Dashboards
-from .dataset import Datasets
-from .charts import Charts
+from dashboards import Dashboards
+from dataset import Datasets
+from charts import Charts
 from typing_cc.typing import viz_types
 
 class SupersetAPIClient:

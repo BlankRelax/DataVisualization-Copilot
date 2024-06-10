@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 app = Flask(__name__)
-from .client import SupersetAPIClient
+from client import SupersetAPIClient
 from llm.sql_generator import invoke_full_chain
 
 sc = SupersetAPIClient(base_url="http://localhost:8088",
@@ -11,7 +11,7 @@ def post_chart_from_sql_to_dash():
 
     """
     json payload format: {user_input:"string",
-                          dashboard_ids:[]}
+                          dashboard_ids:"string"}
     """
     payload = request.get_json()
     # use LLM to create chart and dataset params
@@ -23,7 +23,7 @@ def post_chart_from_sql_to_dash():
     # create chart and add to dashboard using previously created dataset and LLM generated params
     sc.create_chart(slice_name=slice_name,
                        viz_type=viz_type,
-                    dashboard_ids=payload['dashboard_ids'])
+                    dashboard_ids=[payload['dashboard_ids']])
 
 
 
