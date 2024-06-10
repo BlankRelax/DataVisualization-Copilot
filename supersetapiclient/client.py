@@ -3,9 +3,9 @@ from time import localtime
 import json
 import requests
 from IPython.display import JSON
-from dashboards import Dashboards
-from dataset import Datasets
-from charts import Charts
+from supersetapiclient.dashboards import Dashboards
+from supersetapiclient.dataset import Datasets
+from supersetapiclient.charts import Charts
 from typing_cc.typing import viz_types
 
 class SupersetAPIClient:
@@ -90,7 +90,7 @@ class SupersetAPIClient:
     def create_chart(self,
                           slice_name,
                           viz_type:viz_types,
-                          verbose:bool,
+                          verbose:bool=True,
                           dashboard_ids:list[int]|None=None,
                           ):
         """create data from previously excecuted sql query"""
