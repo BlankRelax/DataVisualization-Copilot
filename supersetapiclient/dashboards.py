@@ -88,12 +88,77 @@ class Dashboards(BaseSupersetObject):
                         json={}).json()
         return r['url']
     
-    def add_chart(dashboard_id:str|int, chart_id:str|int)->None:
-        pass
+    def post_embed(self,
+                id:str,
+                allowed_domains:list[str],
+                verbose:bool=False)->str:
+        """use to create a dashboard's embedded configuration with a set of allowed domains,
+            if allowed domains is empty then it will be set to superset host ip
+            
+            Params:
+            id:str - dashboard id
+            allowed_domains:list[str] - list of allowed domains that can embed this dashboard in the form 
+                                        "http://IP_address/"
+            Returns:
+            embedded sdk 
+        
+        """
+         
+        r = requests.post(url=self._base_url+f'/api/v1/dashboard/{id}/embedded',
+                        headers=self._headerAuth,
+                        json={'allowed_domains':allowed_domains})
+        if verbose: print(r)
+        embedded_sdk = r.json()['result']['uuid']
+        return embedded_sdk
+    
+    def get_embed(self,
+                id:str,
+                verbose:bool=False)->str:
+        """use to get an existing dashboard's embedded configuration and a set of allowed domains
+        
+            Params:
+            id:str - dashboard id
+            
+            Returns:
+            embedded sdk 
+        """
+        r = requests.post(url=self._base_url+f'/api/v1/dashboard/{id}/embedded',
+                        headers=self._headerAuth,
+                        )
+        if verbose: print(r)
+        embedded_sdk = r.json()['result']['uuid']
+        return embedded_sdk
+    
+    def delete_embed(self,
+                id:str,
+                verbose:bool=False)->str:
+        """deletes an existing dashboard's embedded configuration
+        
+            Params:
+            id:str - dashboard id
+            
+            Returns:
+            confirmation of action string
+        """
+        r = requests.delete(url=self._base_url+f'/api/v1/dashboard/{id}/embedded',
+                        headers=self._headerAuth,
+                        )
+        if verbose: print(r)
+        return r.status_code
+         
+        r = requests.post(url=self._base_url+f'/api/v1/dashboard/{id}/embedded',
+                        headers=self._headerAuth,
+                        json={'allowed_domains':allowed_domains})
+        if verbose: print(r)
+        embedded_sdk = r.json()['result']['uuid']
+        return embedded_sdk
 
     
     def get_link(self,id:str|int)->str:
         return f"{self._base_url}/superset/dashboard/{id}?standalone=true"
+    
+    def add_chart(dashboard_id:str|int, chart_id:str|int)->None:
+        pass
     
     def favourite():
         pass
