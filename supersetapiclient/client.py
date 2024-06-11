@@ -86,7 +86,7 @@ class SupersetAPIClient:
                            table_name=table_name,
                            verbose=verbose)
 
-    def __check_dashbaord_ids(self,dashboard_ids:list[int|str]):
+    def _check_dashbaord_ids(self,dashboard_ids:list[int|str]):
         #  if user enters a string, we assume it is dashboard name and convert it into its dashboard ids
         new_dashboard_ids = dashboard_ids
         dashboard_dict = self.dashboards.info_all
@@ -104,7 +104,7 @@ class SupersetAPIClient:
                           ):
         """create data from previously excecuted sql query"""
         
-        dashboard_ids = self.dashboards.user_dashboard_ids if dashboard_ids is None else self.__check_dashbaord_ids(dashboard_ids)
+        dashboard_ids = self.dashboards.user_dashboard_ids if dashboard_ids is None else self._check_dashbaord_ids(dashboard_ids)
         self.chart.create(slice_name=slice_name,
                                 viz_type=viz_type,
                                 dashboard_ids=dashboard_ids,

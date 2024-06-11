@@ -15,6 +15,7 @@ config.sh
 /Figures/
 /diagrams/
 config_local.py
+/examples
 
 # Node artifact files
 node_modules/
