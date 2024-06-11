@@ -145,7 +145,7 @@ class Dashboards(BaseSupersetObject):
                         )
         if verbose: print(r)
         if r.status_code==200:
-            return "dashboard successfully deleted"
+            return "dashboard embed sdk successfully deleted"
         else: 
             return "error in deleting dashboard"
         
