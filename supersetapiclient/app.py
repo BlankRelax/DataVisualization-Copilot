@@ -53,7 +53,104 @@ class SupersetAPIClientAPI(BaseApi):
                        password=password)
             self.sc = sc
             return self.response(200, message='SupersetAPIClient is now active')
-        
+
+    @expose("/embed", methods=["POST","GET","DELETE"])
+    def embed_dashboard(self)->Response:
+        """creates embedded sdk
+        ---
+        post:
+          summary: creates a new embed token for a dashboard that 
+          gives viewing permission to certain domains 
+          requestBody:
+            description: id, allowed_domains, verbose
+            required: true
+            content:
+              application/json:
+                schema:
+                  {"id":"string",
+                  "allowed_domains":[],
+                  "verbose":"boolean"}
+         
+        responses:
+            200:
+            description: embed sdk has been retreived successfully
+            content:
+                application/json:
+                schema:
+                    type: object
+                    properties:
+                    message:
+                        type: dict
+            ---
+        get:
+          summary: gets an already existing embed token for a dashboard that 
+          gives viewing permission to certain domains 
+          requestBody:
+            description: id, verbose
+            required: true
+            content:
+              application/json:
+                schema:
+                  {"id":"string",
+                  "verbose":"boolean"}
+         
+        responses:
+            200:
+            description: embed sdk has been retreived successfully
+            content:
+                application/json:
+                schema:
+                    type: object
+                    properties:
+                    message:
+                        type: dict
+                ---
+        delete:
+          summary: deletes an existing embed sdk of a dashboard 
+          requestBody:
+            description: id, verbose
+            required: true
+            content:
+              application/json:
+                schema:
+                  {"id":"string",
+                  "verbose":"boolean"}
+         
+        responses:
+            200:
+            description: embed sdk has been deleted successfully
+            content:
+                application/json:
+                schema:
+                    type: object
+                    properties:
+                    message:
+                        type: string
+                """
+        if request.method=='POST':
+            payload = request.get_json()
+            id = payload['id']
+            allowed_domains = payload['allowed_domains']
+            verbose=payload['verbose']   
+            embed_sdk=self.sc.dashboards.post_embed(id=id,
+                                          allowed_domains=allowed_domains,
+                                          verbose=verbose)
+            return self.response(200, message={'embed_sdk':embed_sdk})
+        elif request.method=='GET':
+            payload = request.get_json()
+            id = payload['id']
+            verbose=payload['verbose']   
+            embed_sdk=self.sc.dashboards.get_embed(id=id,
+                                          verbose=verbose)
+            return self.response(200, message={'embed_sdk':embed_sdk})
+        elif request.method=='DELETE':
+            payload = request.get_json()
+            id = payload['id']
+            verbose=payload['verbose']   
+            return_m=embed_sdk=self.sc.dashboards.delete_embed(id=id,
+                                          verbose=verbose)
+            return self.response(200, message=return_m)
+            
     @expose("/dashboard", methods=["POST"])
     def create_dashboard(self)->Response:
         """Creates a new chart
