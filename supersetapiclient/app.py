@@ -1,3 +1,4 @@
+# https://flask-appbuilder.readthedocs.io/en/latest/rest_api.html
 from flask import Flask, request, jsonify, Response
 from flask_appbuilder.api import expose, BaseApi
 from flask_appbuilder import AppBuilder, SQLA
@@ -9,9 +10,38 @@ db = SQLA(app)
 appbuilder = AppBuilder(app, db.session)
 
 class SupersetAPIClientAPI(BaseApi):
-    
+
+    resource_name = 'ssclient'
+
     @expose("/login", methods=["POST"])
     def login(self)->Response:
+        """activates supersetclient connection
+        ---
+        post:
+          summary: logs in to Superset instance at 'base_url' provided 
+          with provided username and password
+          requestBody:
+            description: user_inputs and dashboard_ids(optional)
+            required: true
+            content:
+              application/json:
+                schema:
+                  {"base_url":"string",
+                  "username":"string",
+                  "password":"string"}
+         
+        responses:
+            200:
+            description: login has been successful and you can start to 
+            interact with the superset instance through our wrapped API
+            content:
+                application/json:
+                schema:
+                    type: object
+                    properties:
+                    message:
+                        type: string
+                """
         if request.method=='POST':
             payload=request.get_json()
             base_url = payload['base_url']
@@ -27,11 +57,31 @@ class SupersetAPIClientAPI(BaseApi):
 
     @expose("/chart", methods=["POST"])
     def post_chart_from_sql_to_dash(self)->Response:
-
-        """
-        json payload format: {user_input:"string",
-                            dashboard_ids:[int]}
-        """
+        """Creates a new chart
+        ---
+        post:
+          summary: creates a new dataset using LLM generated SQL from user input as prompt,
+          generates required chart and pushes it into a dashboard 
+          requestBody:
+            description: user_inputs and dashboard_ids(optional)
+            required: true
+            content:
+              application/json:
+                schema:
+                  {"user_input":"string",
+                  "dashboard_ids":[]}
+         
+        responses:
+            200:
+            description: chart has been created and displayed on dashboard
+            content:
+                application/json:
+                schema:
+                    type: object
+                    properties:
+                    message:
+                        type: string
+                """
         if request.method=='POST':
             payload = request.get_json()
             user_input= payload['user_input']
@@ -51,10 +101,10 @@ class SupersetAPIClientAPI(BaseApi):
 appbuilder.add_api(SupersetAPIClientAPI)
 
 
-# http://127.0.0.1:5000/api/v1/supersetapiclientapi/chart
+# http://127.0.0.1:5000/api/v1/resource_name/chart
 # {"user_input": "make a 2d scatter for revenue against genre", "dashboard_ids":[31]}
 
-# http://127.0.0.1:5000/api/v1/supersetapiclientapi/login
+# http://127.0.0.1:5000/api/v1/resource_name/login
 # {"base_url":"http://localhost:8088",
 # "username":"admin",
 # "password":"admin"}
