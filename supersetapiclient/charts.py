@@ -401,7 +401,7 @@ class Charts(BaseSupersetObject):
                         
                         slice_name,
                         viz_type:viz_types,
-                        dashboard_ids:list[int]|None,
+                        dashboard_ids:list[int|str]|None,
                         column_names,
                         excecuted_data_uid,
                         excecuted_data_id,
@@ -410,7 +410,6 @@ class Charts(BaseSupersetObject):
                         excecuted_data_type,
                         verbose:bool=False
                         ):
-
         if viz_type == "echarts_timeseries_bar":
             r=requests.post(self._base_url+'/api/v1/chart/',
                             headers=self._headerAuth,

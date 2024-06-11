@@ -54,7 +54,40 @@ class SupersetAPIClientAPI(BaseApi):
             self.sc = sc
             return self.response(200, message='SupersetAPIClient is now active')
         
-
+    @expose("/dashboard", methods=["POST"])
+    def create_dashboard(self)->Response:
+        """Creates a new chart
+        ---
+        post:
+          summary: creates a new dataset using LLM generated SQL from user input as prompt,
+          generates required chart and pushes it into a dashboard 
+          requestBody:
+            description: user_inputs and dashboard_ids(optional)
+            required: true
+            content:
+              application/json:
+                schema:
+                  {"user_input":"string",
+                  "dashboard_ids":[]}
+         
+        responses:
+            200:
+            description: chart has been created and displayed on dashboard
+            content:
+                application/json:
+                schema:
+                    type: object
+                    properties:
+                    message:
+                        type: string
+                """
+        if request.method=='POST':
+            payload = request.get_json()
+            name= payload['name']
+    
+            self.sc.create_dashboard(name=name)
+            return self.response(200, message='Dashbaord created')
+        
     @expose("/chart", methods=["POST"])
     def post_chart_from_sql_to_dash(self)->Response:
         """Creates a new chart
