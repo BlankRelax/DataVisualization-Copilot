@@ -40,8 +40,10 @@ class SupersetAPIClient:
             db_ids[db['database_name']] = db['id'] # e.g {'chinook': 5, 'examples': 1}
         
         database_name = 'chinook'
-        db_scr = requests.get(base_url+f"/api/v1/database/{db_ids[database_name]}/schemas/", headers=self._headerAuth) # this fixes code to chinook
-        if db_scr.status_code!=200: raise DatabaseSchemaNotAccessedError(database_name=database_name)
+        try:
+            db_scr = requests.get(base_url+f"/api/v1/database/{db_ids[database_name]}/schemas/", headers=self._headerAuth) # this fixes code to chinook
+        except KeyError:
+            raise DatabaseSchemaNotAccessedError(database_name=database_name)
         
         db_sc:dict[list] = db_scr.json() # e.g {'result': ['information_schema', 'public']}
     

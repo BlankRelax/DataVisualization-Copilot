@@ -83,7 +83,7 @@ class Datasets(BaseSupersetObject):
                         "sql": sql ,
                         "table_name": table_name })
         if verbose: print(r,r.json())
-        if r.status_code!=201: raise DatasetNotCreatedError(dataset_name=table_name)
+        if r.status_code!=201: raise DatasetNotCreatedError(dataset_name=table_name, r_error=r)
         else: print(f"dataset has been created with name {table_name}")
         excecuted_data_id =r.json()['id'] # e.g 31
         excecuted_data_uid:str=r.json()['data']['uid'] # e.g 31__table

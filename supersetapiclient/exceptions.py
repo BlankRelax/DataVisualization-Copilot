@@ -10,7 +10,7 @@ class UnsupportedViztypeError(Exception):
      
     def __init__(self, viz_type:str):
         self.viz_type = viz_type
-        self.message= f"{self.viz_type} is not supported. Choose from the following: {supported_viz_types.keys()}"
+        self.message= f"{self.viz_type} is not supported. Choose from the following: {supported_viz_types}"
         super().__init__(self.message)
 
 class DatasetNotCreatedError(Exception):
@@ -21,9 +21,10 @@ class DatasetNotCreatedError(Exception):
         message -- failed to create dataset- check for duplicates
     """
      
-    def __init__(self, dataset_name:str):
+    def __init__(self, dataset_name:str,r_error:str):
         self.dataset_name = dataset_name
-        self.message= f"{self.dataset_name} could not be created"
+        self.r_error=r_error
+        self.message= f"{self.dataset_name} could not be created. Request error code : {self.r_error} - Could not process entity"
         super().__init__(self.message)
 
 class DatabaseNotAccessedError(Exception):
@@ -51,3 +52,14 @@ class DatabaseSchemaNotAccessedError(Exception):
         self.message= f"schemas for {self.database_name} cannot be accessed"
         super().__init__(self.message)
 
+"""responses = {
+        "400": {"description": "Bad request", "content": error_payload_content},
+        "401": {"description": "Unauthorized", "content": error_payload_content},
+        "403": {"description": "Forbidden", "content": error_payload_content},
+        "404": {"description": "Not found", "content": error_payload_content},
+        "410": {"description": "Gone", "content": error_payload_content},
+        "422": {
+            "description": "Could not process entity",
+            "content": error_payload_content,
+        },
+        "500": {"description": "Fatal error", "content": error_payload_content},"""
