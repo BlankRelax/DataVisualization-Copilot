@@ -6,6 +6,7 @@ from IPython.display import JSON
 from supersetapiclient.dashboards import Dashboards
 from supersetapiclient.dataset import Datasets
 from supersetapiclient.charts import Charts
+from supersetapiclient.exceptions import DatabaseNotAccessedError, DatabaseSchemaNotAccessedError
 from typing_cc.typing import viz_types
 
 class SupersetAPIClient:
@@ -31,13 +32,17 @@ class SupersetAPIClient:
 
         # get database names with  database id as value
         dbs_r = requests.get(self._base_url+'/api/v1/database/', headers=self._headerAuth)
+        if dbs_r.status_code !=200: raise DatabaseNotAccessedError()
         dbs = dbs_r.json() 
 
         db_ids:dict[str,int] = {}
         for db in dbs['result']:
             db_ids[db['database_name']] = db['id'] # e.g {'chinook': 5, 'examples': 1}
-
-        db_scr = requests.get(base_url+f"/api/v1/database/{db_ids['chinook']}/schemas/", headers=self._headerAuth) # this fixes code to chinook
+        
+        database_name = 'chinook'
+        db_scr = requests.get(base_url+f"/api/v1/database/{db_ids[database_name]}/schemas/", headers=self._headerAuth) # this fixes code to chinook
+        if db_scr.status_code!=200: raise DatabaseSchemaNotAccessedError(database_name=database_name)
+        
         db_sc:dict[list] = db_scr.json() # e.g {'result': ['information_schema', 'public']}
     
         self.db_ids= db_ids

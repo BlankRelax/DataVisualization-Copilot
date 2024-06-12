@@ -5,6 +5,7 @@ if 'f:\\Users\\hassa\\carecognitics_backend' not in sys.path:
 import json
 import requests
 from typing_cc.typing import viz_types
+from supersetapiclient.exceptions import UnsupportedViztypeError
 from supersetapiclient.base import BaseSupersetObject
 
 class Charts(BaseSupersetObject):
@@ -475,4 +476,5 @@ class Charts(BaseSupersetObject):
                             excecuted_data_type=excecuted_data_type))
             if verbose: print(r,r.json())
             return r.json()
+        else: raise UnsupportedViztypeError(viz_type=viz_type)
 

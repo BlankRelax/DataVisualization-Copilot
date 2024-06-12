@@ -1,5 +1,6 @@
 import requests
 from supersetapiclient.base import BaseSupersetObject
+from supersetapiclient.exceptions import DatasetNotCreatedError
 
 # code to be refactored to have api calls as seperate functions
 class Datasets(BaseSupersetObject):
@@ -82,7 +83,8 @@ class Datasets(BaseSupersetObject):
                         "sql": sql ,
                         "table_name": table_name })
         if verbose: print(r,r.json())
-        print(f"dataset has been created with name {table_name}")
+        if r.status_code!=201: raise DatasetNotCreatedError(dataset_name=table_name)
+        else: print(f"dataset has been created with name {table_name}")
         excecuted_data_id =r.json()['id'] # e.g 31
         excecuted_data_uid:str=r.json()['data']['uid'] # e.g 31__table
         excecuted_data_type:str=r.json()['data']['type'] # e.g table
